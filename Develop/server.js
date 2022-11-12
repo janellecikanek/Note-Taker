@@ -1,14 +1,12 @@
 const express = require('express');
 const path = require('path');
-const db = require("./db/db.json")
-const fs = require("fs")
+const db = require('./db/db.json');
+const fs = require('fs');
+const { start } = require('repl');
 
 const PORT = process.env.PORT || 3001;
 
 const app = express();
-
-// Import custom middleware, "cLog"
-//app.use(clog);
 
 // Middleware for parsing JSON and urlencoded form data
 app.use(express.json());
@@ -26,51 +24,51 @@ app.get('/notes', (req, res) =>
 );
 
 app.get('/api/notes', (req, res) => {
-  res.json(db.slice(1))
-})
+  res.json(db.slice(1));
+});
 
 app.post('/api/notes', (req, res) => {
-  const newNote = createNote(req.body, db)
-  res.json(newNote)
-})
+  const newNote = createNote(req.body, db);
+  res.json(newNote);
+});
 
 const createNote = (body, notesArr) => {
   const newNote = body;
   if(!Array.isArray(notesArr)) 
-  notesArr = []
+  notesArr = [];
   if(notesArr.length === 0)
-    notesArr.push(0)
+    notesArr.push(0);
 
   body.id = notesArr.length;
-  notesArr[0]++
-  notesArr.push(newNote)
+  notesArr[0]++;
+  notesArr.push(newNote);
 
   fs.writeFileSync(
-    path.join(__dirname, "./db/db.json"),
+    path.join(__dirname, './db/db.json'),
     JSON.stringify(notesArr, null, 2)
-  )
-    return newNote
-}
+  );
+    return newNote;
+};
 
 app.delete('/api/notes/:id', (req, res) => {
-  deleteNote(req.params.id, db)
-  res.json(true)
-})
+  deleteNote(req.params.id, db);
+  res.json(true);
+});
 
 const deleteNote = (id, notesArr) => {
   for(let i = 0; i < notesArr.length; i++) {
-    let note = notesArr[i]
-    if(note.id === id) {
-      notesArr.splice(i, 1)
+    let note = notesArr[i];
+    if(note.id == id) {
+      notesArr.splice(i, 1);
       fs.writeFileSync(
-        path.join(__dirname, "./db/db.json"),
+        path.join(__dirname, './db/db.json'),
         JSON.stringify(notesArr, null, 2)
-      )
+      );
       break;
     }
   }
-}
+};
 
-app.listen(PORT, () =>
-  console.log(`App listening at http://localhost:${PORT} 🚀`)
-);
+app.listen(PORT, () => {
+  console.log(`App listening at http://localhost:${PORT}' 🚀`);
+});
