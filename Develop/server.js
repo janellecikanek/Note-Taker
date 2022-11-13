@@ -2,10 +2,8 @@ const express = require('express');
 const path = require('path');
 const db = require('./db/db.json');
 const fs = require('fs');
-const { start } = require('repl');
 
 const PORT = process.env.PORT || 3001;
-
 const app = express();
 
 // Middleware for parsing JSON and urlencoded form data
@@ -30,13 +28,13 @@ app.get('/api/notes', (req, res) => {
 app.post('/api/notes', (req, res) => {
   const newNote = createNote(req.body, db);
   res.json(newNote);
-});
+})
 
 const createNote = (body, notesArr) => {
   const newNote = body;
-  if(!Array.isArray(notesArr)) 
-  notesArr = [];
-  if(notesArr.length === 0)
+  if (!Array.isArray(notesArr))
+    notesArr = [];
+  if (notesArr.length === 0)
     notesArr.push(0);
 
   body.id = notesArr.length;
@@ -47,18 +45,18 @@ const createNote = (body, notesArr) => {
     path.join(__dirname, './db/db.json'),
     JSON.stringify(notesArr, null, 2)
   );
-    return newNote;
+  return newNote;
 };
 
 app.delete('/api/notes/:id', (req, res) => {
   deleteNote(req.params.id, db);
   res.json(true);
-});
+})
 
 const deleteNote = (id, notesArr) => {
-  for(let i = 0; i < notesArr.length; i++) {
+  for (let i = 0; i < notesArr.length; i++) {
     let note = notesArr[i];
-    if(note.id == id) {
+    if (note.id == id) {
       notesArr.splice(i, 1);
       fs.writeFileSync(
         path.join(__dirname, './db/db.json'),
